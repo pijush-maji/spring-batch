@@ -12,6 +12,10 @@ public class FirstJobListener implements JobExecutionListener {
 		System.out.println("Before job execution......");
 		System.out.println("Job name "+jobExecution.getJobInstance().getJobName());
 		System.out.println("Job params "+jobExecution.getJobParameters());
+		System.out.println("Job context "+jobExecution.getExecutionContext());
+		
+		//Adding JobExecutionContext
+		jobExecution.getExecutionContext().put("jec", "jec value");
 		JobExecutionListener.super.beforeJob(jobExecution);
 	}
 
@@ -20,6 +24,7 @@ public class FirstJobListener implements JobExecutionListener {
 		System.out.println("After job execution......");
 		System.out.println("Job name "+jobExecution.getJobInstance().getJobName());
 		System.out.println("Job params "+jobExecution.getJobParameters());
+		System.out.println("Job context "+jobExecution.getExecutionContext());
 		JobExecutionListener.super.afterJob(jobExecution);
 	}
 	

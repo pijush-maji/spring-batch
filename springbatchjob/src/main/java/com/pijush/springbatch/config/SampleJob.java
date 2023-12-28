@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.pijush.springbatch.listener.FirstJobListener;
+import com.pijush.springbatch.listener.FirstStepListener;
 import com.pijush.springbatch.service.SecondTasklet;
 
 @Configuration
@@ -28,6 +29,9 @@ public class SampleJob {
 	
 	@Autowired
 	private FirstJobListener firstJobListener;
+	
+	@Autowired
+	private FirstStepListener firstStepListener;
 	
 	
 	@Bean
@@ -43,6 +47,7 @@ public class SampleJob {
 	private Step firstStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 		return new StepBuilder("First Step", jobRepository)
 				.tasklet(firstTask(), transactionManager)
+				.listener(firstStepListener)
 				.build();
 	}
 	
