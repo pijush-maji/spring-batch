@@ -44,7 +44,7 @@ public class SampleJob {
 	private FirstItemWriter firstItemWriter;
 	
 	//Job Created using Tasklet
-	//@Bean
+	@Bean
 	public Job firstJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 		return new JobBuilder("First Job", jobRepository)
 				.incrementer(new RunIdIncrementer())
@@ -96,6 +96,7 @@ public class SampleJob {
 		return new JobBuilder("Second Job",jobRepository)
 				.incrementer(new RunIdIncrementer())
 				.start(firstChunkStep(jobRepository,transactionManager))
+				.next(secondStep(jobRepository, transactionManager))
 				.build();
 	}
 
