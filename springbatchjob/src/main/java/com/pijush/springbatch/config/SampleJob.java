@@ -17,7 +17,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.pijush.springbatch.listener.FirstJobListener;
 import com.pijush.springbatch.listener.FirstStepListener;
+import com.pijush.springbatch.processor.FirstItemProcessor;
+import com.pijush.springbatch.reader.FirstItemReader;
 import com.pijush.springbatch.service.SecondTasklet;
+import com.pijush.springbatch.writer.FirstItemWriter;
 
 @Configuration
 
@@ -33,8 +36,15 @@ public class SampleJob {
 	@Autowired
 	private FirstStepListener firstStepListener;
 	
+	@Autowired
+	private FirstItemReader firstItemReader;
+	@Autowired
+	private FirstItemProcessor firstItemProcessor;
+	@Autowired
+	private FirstItemWriter firstItemWriter;
 	
-	@Bean
+	//Job Created using Tasklet
+	//@Bean
 	public Job firstJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 		return new JobBuilder("First Job", jobRepository)
 				.incrementer(new RunIdIncrementer())
@@ -78,5 +88,24 @@ public class SampleJob {
 	 * 
 	 * } }; }
 	 */
+	
+	//Job created using Chunk
+	
+	@Bean
+	public Job secondJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+		return new JobBuilder("Second Job",jobRepository)
+				.incrementer(new RunIdIncrementer())
+				.start(firstChunkStep(jobRepository,transactionManager))
+				.build();
+	}
+
+	private Step firstChunkStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+		return new StepBuilder("First chunk step",jobRepository)
+				.<Integer,Integer>chunk(3, transactionManager)
+				.reader(firstItemReader)
+				.processor(firstItemProcessor)
+				.writer(firstItemWriter)
+				.build();
+	}
 
 }
