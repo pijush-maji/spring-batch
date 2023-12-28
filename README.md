@@ -1,0 +1,1 @@
+Springbatch - a Demo of Spring batch implementation using H2 DB it takes one .csv file and load the data to the H2 DB.
