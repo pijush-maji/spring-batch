@@ -29,10 +29,13 @@ public class JobService {
 	private Job secondJob;
 
 	@Async
-	public void runJob(String jobName) {
+	public void runJob(String jobName,Map<String, String> param) {
 		// Way 1 to create jobParameters
-		JobParameters jobParameters1 = new JobParametersBuilder().addLong("Start at - ", System.currentTimeMillis())
+		JobParameters jobParameters1 = new JobParametersBuilder()
+				.addString("Param1",param.get("param1"))
 				.toJobParameters();
+//		JobParameters jobParameters1 = new JobParametersBuilder().addLong("Start at - ", System.currentTimeMillis())
+//				.toJobParameters();
 
 		// Way 2 to create jobParameters
 		Map<String, JobParameter<?>> params = new HashMap<>();
