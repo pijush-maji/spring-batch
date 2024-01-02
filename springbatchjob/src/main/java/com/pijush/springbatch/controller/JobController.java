@@ -2,6 +2,9 @@ package com.pijush.springbatch.controller;
 
 import java.util.Map;
 
+import org.springframework.batch.core.launch.JobExecutionNotRunningException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,9 @@ public class JobController {
 
 	@Autowired
 	private JobService jobService;
+	
+	@Autowired
+	private JobOperator jobOperator;
 
 	@PostMapping(value="/start/{jobName}",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String startJob(@PathVariable String jobName, @RequestParam Map<String,String> map) {
@@ -27,6 +33,16 @@ public class JobController {
 		
 		jobService.runJob(jobName,map);
 		return "Job started...";
+	}
+	
+	@GetMapping("/stop/{jobExecutionId}")
+	public String stopJob(@PathVariable long jobExecutionId) {
+		try {
+			jobOperator.stop(jobExecutionId);
+		} catch (NoSuchJobExecutionException | JobExecutionNotRunningException e) {
+			e.printStackTrace();
+		}
+		return "Job stopped.";
 	}
 
 }
